@@ -1,12 +1,18 @@
 const users = require('../../models/users');
+const createAvatarUrl = require('../../helpers/createAvatarUrl');
 
 const register = async (req, res, next) => {
+    console.log(req.body);
     try {
         const { email, password } = req.body;
+        const avatarURL = createAvatarUrl(email);
+        console.log(avatarURL);
         const result = await users.addUser({
             email,
-            password
+            password,
+            avatarURL,
         });
+        console.log(result);
         res.json({
             status: 'created',
             code: 201,

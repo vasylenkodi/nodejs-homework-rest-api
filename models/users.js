@@ -9,6 +9,7 @@ const { SECRET_KEY } = process.env;
 const newUserSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
+  avatarURL: Joi.string(),
 });
 
 const loginSchema = Joi.object({
@@ -18,6 +19,7 @@ const loginSchema = Joi.object({
 
 const addUser = async (body) => {
   const validation = newUserSchema.validate(body);
+  console.log(validation.error);
   if (validation.error) {
     throw HttpError(400, "validation error");
   }
@@ -29,6 +31,7 @@ const addUser = async (body) => {
   const newUser = await User.create({
     email: body.email,
     password: hashPassword,
+    avatarURL: body.avatarURL,
   });
   return newUser;
 };
@@ -100,6 +103,11 @@ const updateSubscription = async (subscription, userId) => {
   return user;
 }
 
+const updateAvatar = async (id, avatarURL) => {
+  const user = await User.findByIdAndUpdate(id, { avatarURL });
+  return user;
+}
+
 module.exports = {
   addUser,
   login,
@@ -107,4 +115,5 @@ module.exports = {
   deleteToken,
   getCurrent,
   updateSubscription,
+  updateAvatar,
 };
